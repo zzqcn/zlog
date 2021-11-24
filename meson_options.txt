@@ -1,0 +1,4 @@
+# Please keep these options sorted alphabetically.
+
+option('doc', type: 'boolean', value: false, description: 'build doc')
+option('test', type: 'boolean', value: false, description: 'build test')
