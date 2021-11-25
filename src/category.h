@@ -15,8 +15,13 @@
 typedef struct zlog_category_s {
 	char name[MAXLEN_PATH + 1];
 	size_t name_len;
+	#ifndef ZZQ_LEVEL
 	unsigned char level_bitmap[32];
 	unsigned char level_bitmap_backup[32];
+	#else
+	unsigned char level_bitmap;
+	unsigned char level_bitmap_backup;
+	#endif
 	zc_arraylist_t *fit_rules;
 	zc_arraylist_t *fit_rules_backup;
 } zlog_category_t;
@@ -31,8 +36,12 @@ void zlog_category_rollback_rules(zlog_category_t * a_category);
 
 int zlog_category_output(zlog_category_t * a_category, zlog_thread_t * a_thread);
 
+#ifndef ZZQ_LEVEL
 #define zlog_category_needless_level(a_category, lv) \
     (a_category && !((a_category->level_bitmap[lv/8] >> (7 - lv % 8)) & 0x01))
-
+#else
+#define zlog_category_needless_level(a_category, lv) \
+    (a_category && !(a_category->level_bitmap & (1U << lv)))
+#endif
 
 #endif

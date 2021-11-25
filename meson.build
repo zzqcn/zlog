@@ -1,5 +1,5 @@
 project('zlog', 'c',
-    version: '1.2.12'
+    version: '1.3.0'
 )
 
 ver = meson.project_version().split('.')
@@ -9,6 +9,8 @@ headers = []
 libs = []
 
 thread = dependency('threads')
+
+add_project_arguments('-DZZQ_LEVEL', language: 'c')
 
 subdir('src')
 if get_option('test')

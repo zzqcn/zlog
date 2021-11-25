@@ -612,10 +612,17 @@ exit:
 int zlog_level_switch(zlog_category_t * category, int level)
 {
     // This is NOT thread safe.
+#ifndef ZZQ_LEVEL
     memset(category->level_bitmap, 0x00, sizeof(category->level_bitmap));
     category->level_bitmap[level / 8] |= ~(0xFF << (8 - level % 8));
     memset(category->level_bitmap + level / 8 + 1, 0xFF,
 	    sizeof(category->level_bitmap) -  level / 8 - 1);
+#else
+	if(level < 0 || level > 7)
+		return -1;
+	category->level_bitmap = 0xff;
+	category->level_bitmap >>= (7 - level);
+#endif
 
     return 0;
 }

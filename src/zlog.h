@@ -31,7 +31,7 @@ void zlog_fini(void);
 void zlog_profile(void);
 
 zlog_category_t *zlog_get_category(const char *cname);
-int zlog_level_enabled(zlog_category_t *category, const int level);
+// int zlog_level_enabled(zlog_category_t *category, const int level);
 
 int zlog_put_mdc(const char *key, const char *value);
 char *zlog_get_mdc(const char *key);
@@ -86,6 +86,7 @@ const char *zlog_version(void);
 
 /******* useful macros, can be redefined at user's h file **********/
 
+#ifndef ZZQ_LEVEL
 typedef enum {
 	ZLOG_LEVEL_DEBUG = 20,
 	ZLOG_LEVEL_INFO = 40,
@@ -93,7 +94,18 @@ typedef enum {
 	ZLOG_LEVEL_WARN = 80,
 	ZLOG_LEVEL_ERROR = 100,
 	ZLOG_LEVEL_FATAL = 120
-} zlog_level; 
+} zlog_level;
+#else
+	#define ZLOG_LEVEL_EMERG    0U
+	#define ZLOG_LEVEL_FATAL    0U
+	#define ZLOG_LEVEL_ALERT    1U
+	#define ZLOG_LEVEL_CRIT     2U
+	#define ZLOG_LEVEL_ERR      3U
+	#define ZLOG_LEVEL_WARNING  4U
+	#define ZLOG_LEVEL_NOTICE   5U
+	#define ZLOG_LEVEL_INFO     6U
+	#define ZLOG_LEVEL_DEBUG    7U
+#endif
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
 # if defined __GNUC__ && __GNUC__ >= 2
@@ -265,12 +277,24 @@ typedef enum {
 	ZLOG_LEVEL_DEBUG, buf, buf_len)
 
 /* enabled macros */
+#ifndef ZZQ_LEVEL
 #define zlog_fatal_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_FATAL)
 #define zlog_error_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_ERROR)
 #define zlog_warn_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_WARN)
 #define zlog_notice_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_NOTICE)
 #define zlog_info_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_INFO)
 #define zlog_debug_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_DEBUG)
+#else
+#define zlog_emerg_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_EMERG)
+#define zlog_fatal_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_FATAL)
+#define zlog_alert_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_ALERT)
+#define zlog_crit_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_CRIT)
+#define zlog_err_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_ERR)
+#define zlog_warning_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_WARNING)
+#define zlog_notice_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_NOTICE)
+#define zlog_info_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_INFO)
+#define zlog_debug_enabled(zc) zlog_level_enabled(zc, ZLOG_LEVEL_DEBUG)
+#endif
 
 #ifdef __cplusplus
 }
