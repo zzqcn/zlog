@@ -31,3 +31,10 @@ libzlog = shared_library('zlog', lib_sources,
 
 headers += files('zlog.h')
 libs += libzlog
+
+executable('zlog-chk-conf',
+    files('zlog-chk-conf.c'),
+    link_with: libzlog,
+    #dependencies: thread,
+    install: true,
+)
