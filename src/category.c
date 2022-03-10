@@ -48,14 +48,7 @@ void zlog_category_del(zlog_category_t * a_category)
  */
 static void zlog_cateogry_overlap_bitmap(zlog_category_t * a_category, zlog_rule_t *a_rule)
 {
-#ifndef ZZQ_LEVEL
-	int i;
-	for(i = 0; i < sizeof(a_rule->level_bitmap); i++) {
-		a_category->level_bitmap[i] |= a_rule->level_bitmap[i];
-	}
-#else
 	a_category->level_bitmap |= a_rule->level_bitmap;
-#endif
 }
 
 static int zlog_category_obtain_rules(zlog_category_t * a_category, zc_arraylist_t * rules)
@@ -69,11 +62,7 @@ static int zlog_category_obtain_rules(zlog_category_t * a_category, zc_arraylist
 	/* before set, clean last fit rules first */
 	if (a_category->fit_rules) zc_arraylist_del(a_category->fit_rules);
 
-#ifndef ZZQ_LEVEL
-	memset(a_category->level_bitmap, 0x00, sizeof(a_category->level_bitmap));
-#else
 	a_category->level_bitmap = 0;
-#endif
 
 	a_category->fit_rules = zc_arraylist_new(NULL);
 	if (!(a_category->fit_rules)) {
@@ -163,12 +152,8 @@ int zlog_category_update_rules(zlog_category_t * a_category, zc_arraylist_t * ne
 	a_category->fit_rules_backup = a_category->fit_rules;
 	a_category->fit_rules = NULL;
 
-#ifndef ZZQ_LEVEL
-	memcpy(a_category->level_bitmap_backup, a_category->level_bitmap,
-			sizeof(a_category->level_bitmap));
-#else
 	a_category->level_bitmap_backup = a_category->level_bitmap;
-#endif
+
 	/* 2nd, obtain new_rules to fit_rules */
 	if (zlog_category_obtain_rules(a_category, new_rules)) {
 		zc_error("zlog_category_obtain_rules fail");
@@ -192,12 +177,7 @@ void zlog_category_commit_rules(zlog_category_t * a_category)
 
 	zc_arraylist_del(a_category->fit_rules_backup);
 	a_category->fit_rules_backup = NULL;
-#ifndef ZZQ_LEVEL
-	memset(a_category->level_bitmap_backup, 0x00,
-			sizeof(a_category->level_bitmap_backup));
-#else
 	a_category->level_bitmap_backup = 0;
-#endif
 	return;
 }
 
@@ -223,15 +203,9 @@ void zlog_category_rollback_rules(zlog_category_t * a_category)
 		a_category->fit_rules_backup = NULL;
 	}
 
-#ifndef ZZQ_LEVEL
-	memcpy(a_category->level_bitmap, a_category->level_bitmap_backup,
-			sizeof(a_category->level_bitmap));
-	memset(a_category->level_bitmap_backup, 0x00,
-			sizeof(a_category->level_bitmap_backup));
-#else
 	a_category->level_bitmap = a_category->level_bitmap_backup;
 	a_category->level_bitmap_backup = 0;
-#endif
+
 	return; /* always success */
 }
 

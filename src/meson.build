@@ -23,6 +23,7 @@ lib_sources = files(
 )
 
 libzlog = shared_library('zlog', lib_sources,
+    include_directories: global_inc,
     dependencies: [thread],
     version: major_ver,
     soversion: so_ver,
@@ -32,8 +33,8 @@ libzlog = shared_library('zlog', lib_sources,
 headers += files('zlog.h')
 libs += libzlog
 
-executable('zlog-chk-conf',
-    files('zlog-chk-conf.c'),
+executable('zlog-chk-conf', files('zlog-chk-conf.c'),
+    include_directories: global_inc,
     link_with: libzlog,
     #dependencies: thread,
     install: true,

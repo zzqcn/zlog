@@ -1,16 +1,32 @@
 project('zlog', 'c',
-    version: '1.3.0'
+    version: run_command(find_program('cat', 'more'),
+        files('VERSION')).stdout().strip(),
 )
+
+if get_option('buildtype').startswith('debug')
+    add_project_arguments('-DDEBUG', language: 'c')
+endif
+add_project_arguments('-include', 'version.h', language: 'c')
 
 ver = meson.project_version().split('.')
 major_ver = '@0@.@1@'.format(ver.get(0), ver.get(1))
 so_ver = ver.get(0)
+global_inc = include_directories(
+    '.'
+)
 headers = []
 libs = []
 
-thread = dependency('threads')
+# 生成version.h
+zlog_conf = configuration_data()
+zlog_conf.set_quoted('ZLOG_VERSION', meson.project_version())
+configure_file(
+    output: 'version.h',
+    configuration: zlog_conf,
+    install: false,
+)
 
-add_project_arguments('-DZZQ_LEVEL', language: 'c')
+thread = dependency('threads')
 
 subdir('src')
 if get_option('test')

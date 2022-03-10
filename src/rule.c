@@ -671,39 +671,18 @@ zlog_rule_t *zlog_rule_new(char *line,
 	 */
 	switch (a_rule->compare_char) {
 	case '=':
-#ifndef ZZQ_LEVEL
-		memset(a_rule->level_bitmap, 0x00, sizeof(a_rule->level_bitmap));
-		a_rule->level_bitmap[a_rule->level / 8] |= (1 << (7 - a_rule->level % 8));
-#else
 		a_rule->level_bitmap = (1U << a_rule->level) & 0xff;
-#endif
 		break;
 	case '!':
-#ifndef ZZQ_LEVEL
-		memset(a_rule->level_bitmap, 0xFF, sizeof(a_rule->level_bitmap));
-		a_rule->level_bitmap[a_rule->level / 8] &= ~(1 << (7 - a_rule->level % 8));
-#else
 		a_rule->level_bitmap = 0xff;
 		a_rule->level_bitmap &= ~(1U << a_rule->level);
-#endif
 		break;
 	case '*':
-#ifndef ZZQ_LEVEL
-		memset(a_rule->level_bitmap, 0xFF, sizeof(a_rule->level_bitmap));
-#else
 		a_rule->level_bitmap = 0xff;
-#endif
 		break;
 	case '.':
-#ifndef ZZQ_LEVEL
-		memset(a_rule->level_bitmap, 0x00, sizeof(a_rule->level_bitmap));
-		a_rule->level_bitmap[a_rule->level / 8] |= ~(0xFF << (8 - a_rule->level % 8));
-		memset(a_rule->level_bitmap + a_rule->level / 8 + 1, 0xFF,
-				sizeof(a_rule->level_bitmap) -  a_rule->level / 8 - 1);
-#else
 		a_rule->level_bitmap = 0xff;
 		a_rule->level_bitmap >>= (7 - a_rule->level);
-#endif
 		break;
 	}
 
@@ -989,11 +968,7 @@ int zlog_rule_output(zlog_rule_t * a_rule, zlog_thread_t * a_thread)
 		return a_rule->output(a_rule, a_thread);
 		break;
 	case '.' :
-#ifndef ZZQ_LEVEL
-		if (a_thread->event->level >= a_rule->level) {
-#else
 		if (a_thread->event->level <= a_rule->level) {
-#endif
 			return a_rule->output(a_rule, a_thread);
 		} else {
 			return 0;

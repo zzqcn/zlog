@@ -130,6 +130,11 @@ zlog_level_t *zlog_level_new(char *line)
 		(a_level->str_lowercase)[i] = '\0';
 	}
 
+#ifdef DEBUG
+	printf("str: %s, uppercase: %s, int_level: %d, sys_level: %d\n", str,
+		a_level->str_uppercase, a_level->int_level, a_level->syslog_level);
+#endif
+
 	a_level->str_len = i;
 
 	//zlog_level_profile(a_level, ZC_DEBUG);

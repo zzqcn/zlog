@@ -42,18 +42,7 @@ void zlog_level_list_del(zc_arraylist_t *levels)
 
 static int zlog_level_list_set_default(zc_arraylist_t *levels)
 {
-#ifndef ZZQ_LEVEL
-	return zlog_level_list_set(levels, "* = 0, LOG_INFO")
-	|| zlog_level_list_set(levels, "DEBUG = 20, LOG_DEBUG")
-	|| zlog_level_list_set(levels, "INFO = 40, LOG_INFO")
-	|| zlog_level_list_set(levels, "NOTICE = 60, LOG_NOTICE")
-	|| zlog_level_list_set(levels, "WARN = 80, LOG_WARNING")
-	|| zlog_level_list_set(levels, "ERROR = 100, LOG_ERR")
-	|| zlog_level_list_set(levels, "FATAL = 120, LOG_ALERT")
-	|| zlog_level_list_set(levels, "UNKNOWN = 254, LOG_ERR")
-	|| zlog_level_list_set(levels, "! = 255, LOG_INFO");
-#else
-	return zlog_level_list_set(levels, "* = 7, LOG_INFO")
+	return zlog_level_list_set(levels, "* = 8, LOG_DEBUG")
 	|| zlog_level_list_set(levels, "DEBUG = 7, LOG_DEBUG")
 	|| zlog_level_list_set(levels, "INFO = 6, LOG_INFO")
 	|| zlog_level_list_set(levels, "NOTICE = 5, LOG_NOTICE")
@@ -61,11 +50,9 @@ static int zlog_level_list_set_default(zc_arraylist_t *levels)
 	|| zlog_level_list_set(levels, "ERR = 3, LOG_ERR")
 	|| zlog_level_list_set(levels, "CRIT = 2, LOG_CRIT")
 	|| zlog_level_list_set(levels, "ALERT = 1, LOG_ALERT")
-	|| zlog_level_list_set(levels, "FATAL = 0, LOG_EMERG")
 	|| zlog_level_list_set(levels, "EMERG = 0, LOG_EMERG")
-	|| zlog_level_list_set(levels, "UNKNOWN = 3, LOG_ERR")
-	|| zlog_level_list_set(levels, "! = 0, LOG_INFO"); /** @bug XXX */
-#endif
+	|| zlog_level_list_set(levels, "UNKNOWN = 9, LOG_ERR")
+	|| zlog_level_list_set(levels, "! = 10, LOG_INFO"); /** @bug XXX? */
 }
 
 zc_arraylist_t *zlog_level_list_new(void)

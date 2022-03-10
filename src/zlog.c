@@ -612,17 +612,10 @@ exit:
 int zlog_level_switch(zlog_category_t * category, int level)
 {
     // This is NOT thread safe.
-#ifndef ZZQ_LEVEL
-    memset(category->level_bitmap, 0x00, sizeof(category->level_bitmap));
-    category->level_bitmap[level / 8] |= ~(0xFF << (8 - level % 8));
-    memset(category->level_bitmap + level / 8 + 1, 0xFF,
-	    sizeof(category->level_bitmap) -  level / 8 - 1);
-#else
 	if(level < 0 || level > 7)
 		return -1;
 	category->level_bitmap = 0xff;
 	category->level_bitmap >>= (7 - level);
-#endif
 
     return 0;
 }
@@ -1025,7 +1018,7 @@ int zlog_set_record(const char *rname, zlog_record_fn record_output)
 /*******************************************************************************/
 int zlog_level_enabled(zlog_category_t *category, const int level)
 {
-	return category && ((zlog_category_needless_level(category, level) == 0));
+	return category && !zlog_category_needless_level(category, level);
 }
 
 const char *zlog_version(void) { return ZLOG_VERSION; }

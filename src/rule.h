@@ -37,11 +37,7 @@ struct zlog_rule_s {
 	 * [!] log level != rule level
 	 */
 	int level;
-#ifndef ZZQ_LEVEL
-	unsigned char level_bitmap[32]; /* for category determine whether output or not */
-#else
 	unsigned char level_bitmap;
-#endif
 	unsigned int file_perms;
 	int file_open_flags;
 
